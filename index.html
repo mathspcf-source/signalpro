@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SignalPro • Opções Binárias</title>
+    <title>SignalPro • WebSocket Real-Time</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -12,28 +12,38 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
         body{background:#0A0A0A;min-height:100vh;padding:20px}
         .container{max-width:1400px;margin:0 auto}
+        
         .header{text-align:center;margin-bottom:25px}
         .header h1{font-size:2rem;font-weight:800;color:#FF8C00}
         .header h1 i{color:#FFFFFF}
-        .header p{color:#AAAAAA;font-size:0.85rem}
+        .header p{color:#CCCCCC;font-size:0.85rem}
+        
         .login-box{background:#1A1A1A;border-radius:16px;padding:35px 25px;border:1px solid #FF8C00;max-width:400px;margin:0 auto}
         .input-group{margin-bottom:20px}
         .input-group label{display:block;color:#FF8C00;margin-bottom:8px;font-size:0.85rem;font-weight:500}
         .input-group input{width:100%;padding:14px;background:#0A0A0A;border:1px solid #333333;border-radius:10px;color:#FFFFFF;font-size:1rem}
         .btn{width:100%;padding:16px;background:#FF8C00;color:#000000;border:none;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;margin-top:10px}
         .btn-secondary{background:#333333;color:#FFFFFF;margin-top:8px}
+        
         .dashboard{display:none}
         .dashboard.active{display:block}
+        
         .nav-bar{background:#1A1A1A;border-radius:12px;padding:10px 20px;margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
         .nav-buttons{display:flex;gap:10px;flex-wrap:wrap}
         .nav-btn{background:#0A0A0A;border:1px solid #333333;color:#CCCCCC;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600}
         .nav-btn.active{background:#FF8C00;color:#000000}
         .backup-btn{background:#0A0A0A;border:1px solid #FF8C00;color:#FF8C00;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem}
         .logout-btn{background:transparent;border:1px solid #FF4444;color:#FF4444;padding:8px 16px;border-radius:25px;cursor:pointer}
+        
         .page{display:none}
         .page.active{display:block}
+        
         .status-bar{background:#1A1A1A;border-radius:12px;padding:12px 20px;margin-bottom:25px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:#CCCCCC;font-size:0.85rem}
         .status-bar i{color:#00AA55}
+        
+        .ws-badge{background:#00AA55;color:#000000;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:600}
+        .rest-badge{background:#FF8C00;color:#000000;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:600}
+        
         .pairs-section{background:#1A1A1A;border-radius:16px;padding:20px;margin-bottom:25px}
         .category-title{color:#FF8C00;font-size:0.9rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
         .pair-selector{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
@@ -42,37 +52,44 @@
         .pair-btn.signal-put{background:#FF4444;color:#FFFFFF;box-shadow:0 0 8px rgba(255,68,68,0.5)}
         .pair-btn.signal-wait{background:#FF8C00;color:#000000}
         .pair-btn.active{border:2px solid #FFFFFF;transform:scale(1.02)}
+        
         .main-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:25px;margin-bottom:25px}
         @media (max-width:900px){.main-grid{grid-template-columns:1fr}}
+        
         .chart-card{background:#1A1A1A;border-radius:16px;padding:20px}
         .chart-card h3{color:#FF8C00;margin-bottom:15px;font-size:1rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
         .resize-btn{background:#0A0A0A;border:1px solid #333333;color:#CCCCCC;padding:5px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem}
         #tradingview-chart{height:400px;width:100%;border-radius:10px;overflow:hidden}
+        
         .price-card{background:#1A1A1A;border-radius:16px;padding:20px;margin-bottom:20px}
         .price{font-size:2.5rem;font-weight:800;color:#FFFFFF}
         .change{font-size:1rem;margin-left:12px;font-weight:600}
         .change.up{color:#00AA55}
         .change.down{color:#FF4444}
+        
         .signals-container{background:#1A1A1A;border-radius:16px;padding:20px}
         .signals-container h3{color:#FF8C00;margin-bottom:20px;font-size:1rem}
-        .signal-item{background:#0A0A0A;border-radius:12px;padding:25px 12px;text-align:center}
-        .signal-label{color:#AAAAAA;font-size:0.85rem;margin-bottom:15px;font-weight:500}
-        .signal-value{font-size:2rem;font-weight:800;padding:12px 24px;border-radius:30px;display:inline-block}
+        .signals-row{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}
+        .signal-item{background:#0A0A0A;border-radius:12px;padding:20px 12px;text-align:center}
+        .signal-label{color:#CCCCCC;font-size:0.8rem;margin-bottom:12px;font-weight:500}
+        .signal-value{font-size:1.6rem;font-weight:800;padding:10px 20px;border-radius:25px;display:inline-block}
         .signal-value.call{background:#00AA55;color:#FFFFFF}
         .signal-value.put{background:#FF4444;color:#FFFFFF}
         .signal-value.wait{background:#FF8C00;color:#000000}
-        .prob{font-size:0.8rem;margin-top:12px;color:#AAAAAA}
-        .timer{font-size:0.8rem;margin-top:10px;color:#FF8C00;font-family:monospace}
-        .confidence-bar{margin-top:12px;height:6px;background:#1A1A1A;border-radius:3px;overflow:hidden}
+        .prob{font-size:0.75rem;margin-top:10px;color:#CCCCCC}
+        .timer{font-size:0.7rem;margin-top:8px;color:#FF8C00;font-family:monospace}
+        .confidence-bar{margin-top:10px;height:6px;background:#1A1A1A;border-radius:3px;overflow:hidden}
         .confidence-fill{height:100%;transition:width 0.3s}
         .confidence-fill.call{background:#00AA55}
         .confidence-fill.put{background:#FF4444}
+        
         .analysis-box{background:#0A0A0A;border-radius:12px;padding:15px;margin-top:15px}
         .analysis-box h4{color:#FF8C00;margin-bottom:10px;font-size:0.85rem}
         .analysis-text{color:#CCCCCC;font-size:0.8rem;line-height:1.5}
         .indicators-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
         .indicator{background:#1A1A1A;padding:8px 5px;border-radius:6px;text-align:center;font-size:0.7rem;color:#CCCCCC}
         .indicator-value{font-weight:700;color:#FF8C00;font-size:0.9rem}
+        
         .stats-dashboard{background:#1A1A1A;border-radius:16px;padding:20px;margin-bottom:25px}
         .stats-title{color:#FF8C00;font-size:1rem;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
         .export-btn{background:#0A0A0A;border:1px solid #FF8C00;color:#FF8C00;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem}
@@ -89,18 +106,18 @@
         .performance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
         .perf-card{background:#0A0A0A;border-radius:10px;padding:10px;text-align:center}
         .perf-card .value{font-size:1.2rem;font-weight:700;color:#FF8C00}
-        .perf-card .label{font-size:0.65rem;color:#AAAAAA}
+        .perf-card .label{font-size:0.65rem;color:#CCCCCC}
         .signal-log{background:#0A0A0A;border-radius:12px;padding:15px;margin-top:15px;max-height:250px;overflow-y:auto}
         .signal-log h4{color:#FF8C00;margin-bottom:10px;font-size:0.85rem}
         .log-entry{font-size:0.7rem;padding:6px 0;border-bottom:1px solid #1A1A1A;color:#CCCCCC}
         .log-entry.call{color:#00AA55}
         .log-entry.put{color:#FF4444}
+        
         .alert-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
         .alert-toggle{background:#1A1A1A;border:1px solid #333333;color:#CCCCCC;padding:8px 14px;border-radius:25px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:6px}
         .alert-toggle.active{background:#FF8C00;color:#000000}
         .reset-stats-btn{background:#1A1A1A;border:1px solid #FF4444;color:#FF4444;padding:8px 14px;border-radius:25px;cursor:pointer;font-size:0.8rem}
-        .warning-box{background:#1A1A1A;border-left:4px solid #FF8C00;padding:10px 15px;margin-bottom:20px;border-radius:8px}
-        .warning-text{color:#AAAAAA;font-size:0.7rem;line-height:1.4}
+        
         footer{text-align:center;margin-top:20px;color:#666666;font-size:0.7rem}
         .error-message{color:#FF4444;text-align:center;margin-top:12px;display:none}
     </style>
@@ -109,7 +126,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-chart-line"></i> SignalPro</h1>
-            <p>Opções Binárias • Forex USD/EUR • Modo Conservador</p>
+            <p>WebSocket Real-Time • M10 e M15 • Alta Precisão</p>
         </div>
         
         <div id="loginPanel">
@@ -150,37 +167,31 @@
             </div>
             
             <div class="status-bar">
-                <span><i class="fas fa-circle"></i> <span id="connStatus">Conectando...</span></span>
+                <span><i class="fas fa-circle"></i> <span id="connStatus">Conectando WebSocket...</span></span>
                 <span><i class="fas fa-clock"></i> <span id="currentTime"></span></span>
                 <span><i class="fas fa-chart-line"></i> <span id="currentPair">EUR/USD</span></span>
                 <span><i class="fas fa-bullhorn"></i> <span id="lastAlert">Aguardando sinal</span></span>
-                <span><i class="fas fa-chart-simple"></i> <span id="dailyCount">Hoje: 0/5</span></span>
-            </div>
-            
-            <div class="warning-box">
-                <div class="warning-text">
-                    <i class="fas fa-shield-alt" style="color:#FF8C00"></i> 
-                    <strong>Modo Conservador</strong> • Mínimo 92% confiança • Máx 5 sinais/dia • Apenas M15
-                </div>
+                <span><i class="fas fa-chart-simple"></i> <span id="dailyCount">Hoje: 0/10</span></span>
+                <span><span id="connTypeBadge" class="ws-badge">WEBSOCKET</span></span>
             </div>
             
             <div class="pairs-section">
                 <div class="category-title"><i class="fas fa-dollar-sign"></i> Pares com Dólar Americano (USD)</div>
                 <div class="pair-selector">
-                    <button class="pair-btn active" data-par="EURUSD" onclick="trocarPar('EURUSD', 'FX:EURUSD', 'EUR/USD')">EUR/USD</button>
-                    <button class="pair-btn" data-par="GBPUSD" onclick="trocarPar('GBPUSD', 'FX:GBPUSD', 'GBP/USD')">GBP/USD</button>
-                    <button class="pair-btn" data-par="USDJPY" onclick="trocarPar('USDJPY', 'FX:USDJPY', 'USD/JPY')">USD/JPY</button>
-                    <button class="pair-btn" data-par="AUDUSD" onclick="trocarPar('AUDUSD', 'FX:AUDUSD', 'AUD/USD')">AUD/USD</button>
-                    <button class="pair-btn" data-par="USDCAD" onclick="trocarPar('USDCAD', 'FX:USDCAD', 'USD/CAD')">USD/CAD</button>
-                    <button class="pair-btn" data-par="NZDUSD" onclick="trocarPar('NZDUSD', 'FX:NZDUSD', 'NZD/USD')">NZD/USD</button>
+                    <button class="pair-btn active" data-par="EURUSD" onclick="trocarPar('EURUSD', 'OANDA:EUR_USD', 'EUR/USD')">EUR/USD</button>
+                    <button class="pair-btn" data-par="GBPUSD" onclick="trocarPar('GBPUSD', 'OANDA:GBP_USD', 'GBP/USD')">GBP/USD</button>
+                    <button class="pair-btn" data-par="USDJPY" onclick="trocarPar('USDJPY', 'OANDA:USD_JPY', 'USD/JPY')">USD/JPY</button>
+                    <button class="pair-btn" data-par="AUDUSD" onclick="trocarPar('AUDUSD', 'OANDA:AUD_USD', 'AUD/USD')">AUD/USD</button>
+                    <button class="pair-btn" data-par="USDCAD" onclick="trocarPar('USDCAD', 'OANDA:USD_CAD', 'USD/CAD')">USD/CAD</button>
+                    <button class="pair-btn" data-par="NZDUSD" onclick="trocarPar('NZDUSD', 'OANDA:NZD_USD', 'NZD/USD')">NZD/USD</button>
                 </div>
                 <div class="category-title" style="margin-top:15px"><i class="fas fa-euro-sign"></i> Pares com Euro (EUR)</div>
                 <div class="pair-selector">
-                    <button class="pair-btn" data-par="EURGBP" onclick="trocarPar('EURGBP', 'FX:EURGBP', 'EUR/GBP')">EUR/GBP</button>
-                    <button class="pair-btn" data-par="EURJPY" onclick="trocarPar('EURJPY', 'FX:EURJPY', 'EUR/JPY')">EUR/JPY</button>
-                    <button class="pair-btn" data-par="EURCHF" onclick="trocarPar('EURCHF', 'FX:EURCHF', 'EUR/CHF')">EUR/CHF</button>
-                    <button class="pair-btn" data-par="EURAUD" onclick="trocarPar('EURAUD', 'FX:EURAUD', 'EUR/AUD')">EUR/AUD</button>
-                    <button class="pair-btn" data-par="EURCAD" onclick="trocarPar('EURCAD', 'FX:EURCAD', 'EUR/CAD')">EUR/CAD</button>
+                    <button class="pair-btn" data-par="EURGBP" onclick="trocarPar('EURGBP', 'OANDA:EUR_GBP', 'EUR/GBP')">EUR/GBP</button>
+                    <button class="pair-btn" data-par="EURJPY" onclick="trocarPar('EURJPY', 'OANDA:EUR_JPY', 'EUR/JPY')">EUR/JPY</button>
+                    <button class="pair-btn" data-par="EURCHF" onclick="trocarPar('EURCHF', 'OANDA:EUR_CHF', 'EUR/CHF')">EUR/CHF</button>
+                    <button class="pair-btn" data-par="EURAUD" onclick="trocarPar('EURAUD', 'OANDA:EUR_AUD', 'EUR/AUD')">EUR/AUD</button>
+                    <button class="pair-btn" data-par="EURCAD" onclick="trocarPar('EURCAD', 'OANDA:EUR_CAD', 'EUR/CAD')">EUR/CAD</button>
                 </div>
             </div>
             
@@ -201,23 +212,32 @@
                                     <span class="price" id="currentPrice">$---</span>
                                     <span class="change" id="priceChange">---</span>
                                 </div>
-                                <div style="display:flex;gap:15px;color:#AAAAAA;font-size:0.7rem">
-                                    <span>Fonte: <span id="dataSource">ExchangeRate</span></span>
+                                <div style="display:flex;gap:15px;color:#CCCCCC;font-size:0.7rem">
+                                    <span>Fonte: <span id="dataSource">WebSocket</span></span>
                                 </div>
                             </div>
                         </div>
                         <div class="signals-container">
-                            <h3><i class="fas fa-robot"></i> Sinal - 15 MINUTOS (M15)</h3>
-                            <div class="signal-item">
-                                <div class="signal-label">TEMPO DE EXPIRAÇÃO: 15 MINUTOS</div>
-                                <div id="m15Signal" class="signal-value wait">AGUARDE</div>
-                                <div class="prob" id="m15Prob">ANALISANDO MERCADO</div>
-                                <div class="timer" id="m15Timer"></div>
-                                <div class="confidence-bar"><div id="m15Confidence" class="confidence-fill" style="width:0%"></div></div>
+                            <h3><i class="fas fa-robot"></i> Sinais do Robô</h3>
+                            <div class="signals-row">
+                                <div class="signal-item">
+                                    <div class="signal-label">10 MINUTOS (M10)</div>
+                                    <div id="m10Signal" class="signal-value wait">AGUARDE</div>
+                                    <div class="prob" id="m10Prob">ANALISANDO</div>
+                                    <div class="timer" id="m10Timer"></div>
+                                    <div class="confidence-bar"><div id="m10Confidence" class="confidence-fill" style="width:0%"></div></div>
+                                </div>
+                                <div class="signal-item">
+                                    <div class="signal-label">15 MINUTOS (M15)</div>
+                                    <div id="m15Signal" class="signal-value wait">AGUARDE</div>
+                                    <div class="prob" id="m15Prob">ANALISANDO</div>
+                                    <div class="timer" id="m15Timer"></div>
+                                    <div class="confidence-bar"><div id="m15Confidence" class="confidence-fill" style="width:0%"></div></div>
+                                </div>
                             </div>
                             <div class="analysis-box">
-                                <h4><i class="fas fa-microchip"></i> Análise Técnica Completa</h4>
-                                <div id="analysis" class="analysis-text">Aguardando dados do mercado...</div>
+                                <h4><i class="fas fa-microchip"></i> Análise Técnica</h4>
+                                <div id="analysis" class="analysis-text">Aguardando dados WebSocket...</div>
                                 <div class="indicators-grid" id="indicators"></div>
                             </div>
                         </div>
@@ -236,52 +256,159 @@
                         <div class="perf-card"><div class="value" id="expectancy">0</div><div class="label">Expectativa por Operação</div></div>
                     </div>
                     <div class="stats-grid">
+                        <div class="stat-card"><h4><i class="fas fa-clock"></i> 10 MINUTOS (M10)</h4>
+                            <div class="stat-numbers"><div class="stat-hit"><div class="number" id="m10Hits">0</div><div class="label">ACERTOS</div></div>
+                            <div class="stat-miss"><div class="number" id="m10Misses">0</div><div class="label">ERROS</div></div></div>
+                            <div class="stat-accuracy"><div class="value" id="m10Accuracy">0%</div><div class="label">TAXA DE ACERTO</div></div>
+                            <div class="progress-bar"><div class="progress-fill" id="m10Progress" style="width:0%"></div></div>
+                        </div>
                         <div class="stat-card"><h4><i class="fas fa-hourglass-half"></i> 15 MINUTOS (M15)</h4>
                             <div class="stat-numbers"><div class="stat-hit"><div class="number" id="m15Hits">0</div><div class="label">ACERTOS</div></div>
                             <div class="stat-miss"><div class="number" id="m15Misses">0</div><div class="label">ERROS</div></div></div>
                             <div class="stat-accuracy"><div class="value" id="m15Accuracy">0%</div><div class="label">TAXA DE ACERTO</div></div>
                             <div class="progress-bar"><div class="progress-fill" id="m15Progress" style="width:0%"></div></div>
                         </div>
-                        <div class="stat-card"><h4><i class="fas fa-chart-line"></i> Gráfico de Performance</h4><div class="chart-container"><canvas id="chartM15"></canvas></div></div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><h4><i class="fas fa-chart-line"></i> Gráfico M10</h4><div class="chart-container"><canvas id="chartM10"></canvas></div></div>
+                        <div class="stat-card"><h4><i class="fas fa-chart-line"></i> Gráfico M15</h4><div class="chart-container"><canvas id="chartM15"></canvas></div></div>
                     </div>
                     <div class="signal-log"><h4><i class="fas fa-list"></i> Histórico de Sinais</h4><div id="signalLog"></div></div>
                 </div>
             </div>
             
-            <footer>Dados Forex • Atualizado: <span id="lastUpdate">--:--:--</span></footer>
+            <footer>WebSocket Real-Time • Atualizado: <span id="lastUpdate">--:--:--</span></footer>
         </div>
     </div>
 
     <script>
         // ========== CONFIGURAÇÕES ==========
         let parAtual = 'EURUSD';
-        let simboloAtual = 'FX:EURUSD';
+        let simboloWs = 'OANDA:EUR_USD';
+        let simboloTradingView = 'FX:EURUSD';
         let nomeParAtual = 'EUR/USD';
         let precoAtual = 1.0850;
         let historicoPrecos = [];
         let widgetTradingView = null;
-        let intervaloAtualizacao = null;
         let alturaGrafico = 450;
         
-        let confiancaMinima = 92;
-        let maxSinaisDiarios = 5;
-        let cooldownMinutos = 30;
+        // WebSocket
+        let ws = null;
+        let ultimoPreco = null;
+        let usandoWebSocket = true;
+        
+        // Limites diários
+        let maxSinaisDiarios = 10;
         let contagemDiaria = 0;
         let dataUltimoSinal = new Date().toDateString();
-        let ultimoTempoSinal = 0;
+        let ultimoTempoSinal = { m10: 0, m15: 0 };
+        let cooldownMinutos = { m10: 10, m15: 15 };
         
         let somAtivo = true;
         let notificacaoAtiva = true;
-        let sinalAtivo = false;
+        let sinaisAtivos = { m10: false, m15: false };
         
-        let estatisticas = { m15: { acertos: 0, erros: 0 } };
+        let estatisticas = {
+            m10: { acertos: 0, erros: 0 },
+            m15: { acertos: 0, erros: 0 }
+        };
         let logSinais = [];
-        let graficoM15;
+        let graficoM10, graficoM15;
         let lucroTotal = 0;
         let sequenciaAcertos = 0;
         let sequenciaErros = 0;
         
-        // ========== API EXCHANGERATE (FUNCIONA SEM PROXY) ==========
+        // ========== WEBSOCKET FINNHUB (TEMPO REAL) ==========
+        const FINNHUB_API_KEY = 'd7kscphr01qiqbcvioj0d7kscphr01qiqbcviojg';
+        
+        function conectarWebSocket() {
+            if (ws) {
+                ws.close();
+            }
+            
+            try {
+                const wsUrl = `wss://ws.finnhub.io?token=${FINNHUB_API_KEY}`;
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = () => {
+                    console.log('WebSocket conectado');
+                    usandoWebSocket = true;
+                    document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#00AA55"></i> WebSocket Real-Time';
+                    document.getElementById('dataSource').innerHTML = 'WebSocket';
+                    document.getElementById('connTypeBadge').innerHTML = 'WEBSOCKET';
+                    document.getElementById('connTypeBadge').className = 'ws-badge';
+                    
+                    // Assinar o símbolo atual
+                    ws.send(JSON.stringify({ type: 'subscribe', symbol: simboloWs }));
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'trade' && data.data && data.data.length > 0) {
+                        const trade = data.data[0];
+                        const preco = trade.p;
+                        
+                        // Calcular variação
+                        let variacao = 0;
+                        if (ultimoPreco) {
+                            variacao = ((preco - ultimoPreco) / ultimoPreco) * 100;
+                        }
+                        ultimoPreco = preco;
+                        precoAtual = preco;
+                        
+                        // Atualizar interface
+                        document.getElementById('currentPrice').textContent = preco.toFixed(5);
+                        document.getElementById('priceChange').textContent = (variacao > 0 ? '+' : '') + variacao.toFixed(3) + '%';
+                        document.getElementById('priceChange').className = 'change ' + (variacao >= 0 ? 'up' : 'down');
+                        
+                        // Adicionar ao histórico (apenas 1 ponto por segundo para não sobrecarregar)
+                        const agora = Date.now();
+                        if (!ultimoTimestamp || (agora - ultimoTimestamp) >= 1000) {
+                            historicoPrecos.push(preco);
+                            if (historicoPrecos.length > 200) historicoPrecos.shift();
+                            ultimoTimestamp = agora;
+                            
+                            // Gerar sinais
+                            gerarSinais();
+                        }
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    console.log('WebSocket erro:', error);
+                    usandoWebSocket = false;
+                    document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> WebSocket Erro - Fallback REST';
+                    document.getElementById('connTypeBadge').innerHTML = 'REST FALLBACK';
+                    document.getElementById('connTypeBadge').className = 'rest-badge';
+                    iniciarFallbackREST();
+                };
+                
+                ws.onclose = () => {
+                    console.log('WebSocket fechado');
+                    if (usandoWebSocket) {
+                        document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> Reconectando WebSocket...';
+                        setTimeout(conectarWebSocket, 5000);
+                    }
+                };
+                
+            } catch(e) {
+                console.log('Erro ao conectar WebSocket:', e);
+                iniciarFallbackREST();
+            }
+        }
+        
+        let ultimoTimestamp = 0;
+        let intervaloFallback = null;
+        
+        function iniciarFallbackREST() {
+            if (intervaloFallback) clearInterval(intervaloFallback);
+            usandoWebSocket = false;
+            buscarPrecoForex();
+            intervaloFallback = setInterval(buscarPrecoForex, 5000);
+        }
+        
+        // Fallback: ExchangeRate REST
         async function buscarPrecoForex() {
             try {
                 const resposta = await fetch(`https://api.exchangerate.host/latest?base=USD&symbols=EUR,GBP,JPY,AUD,CAD,NZD,CHF`);
@@ -298,8 +425,8 @@
                 else if (parAtual === 'EURCHF') precoAtual = dados.rates.CHF / dados.rates.EUR;
                 else if (parAtual === 'EURAUD') precoAtual = dados.rates.AUD / dados.rates.EUR;
                 else if (parAtual === 'EURCAD') precoAtual = dados.rates.CAD / dados.rates.EUR;
+                else precoAtual = 1.0850;
                 
-                // Simular variação pequena para movimento
                 const variacao = (Math.random() - 0.5) * 0.0001;
                 precoAtual += variacao;
                 
@@ -307,22 +434,20 @@
                 const variacaoPercentual = (variacao / precoAtual) * 100;
                 document.getElementById('priceChange').textContent = (variacaoPercentual > 0 ? '+' : '') + variacaoPercentual.toFixed(3) + '%';
                 document.getElementById('priceChange').className = 'change ' + (variacaoPercentual >= 0 ? 'up' : 'down');
-                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#00AA55"></i> Online';
-                document.getElementById('dataSource').innerHTML = 'ExchangeRate';
+                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> Fallback REST';
                 
                 historicoPrecos.push(precoAtual);
                 if (historicoPrecos.length > 200) historicoPrecos.shift();
                 
-                gerarSinal();
+                gerarSinais();
             } catch(erro) {
-                console.log('Erro:', erro);
-                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> Demo';
+                console.log('Erro fallback:', erro);
                 const variacao = (Math.random() - 0.5) * 0.0001;
                 precoAtual += variacao;
                 historicoPrecos.push(precoAtual);
                 if (historicoPrecos.length > 200) historicoPrecos.shift();
                 document.getElementById('currentPrice').textContent = precoAtual.toFixed(5);
-                gerarSinal();
+                gerarSinais();
             }
         }
         
@@ -374,20 +499,29 @@
             if (hoje !== dataUltimoSinal) { contagemDiaria = 0; dataUltimoSinal = hoje; }
             document.getElementById('dailyCount').innerHTML = `Hoje: ${contagemDiaria}/${maxSinaisDiarios}`;
             
-            const total = estatisticas.m15.acertos + estatisticas.m15.erros;
-            const acc = total > 0 ? (estatisticas.m15.acertos / total * 100).toFixed(1) : 0;
+            const totalM10 = estatisticas.m10.acertos + estatisticas.m10.erros;
+            const accM10 = totalM10 > 0 ? (estatisticas.m10.acertos / totalM10 * 100).toFixed(1) : 0;
+            document.getElementById('m10Hits').textContent = estatisticas.m10.acertos;
+            document.getElementById('m10Misses').textContent = estatisticas.m10.erros;
+            document.getElementById('m10Accuracy').textContent = `${accM10}%`;
+            document.getElementById('m10Progress').style.width = `${accM10}%`;
+            if (graficoM10) graficoM10.data.datasets[0].data = [estatisticas.m10.acertos, estatisticas.m10.erros];
+            
+            const totalM15 = estatisticas.m15.acertos + estatisticas.m15.erros;
+            const accM15 = totalM15 > 0 ? (estatisticas.m15.acertos / totalM15 * 100).toFixed(1) : 0;
             document.getElementById('m15Hits').textContent = estatisticas.m15.acertos;
             document.getElementById('m15Misses').textContent = estatisticas.m15.erros;
-            document.getElementById('m15Accuracy').textContent = `${acc}%`;
-            document.getElementById('m15Progress').style.width = `${acc}%`;
+            document.getElementById('m15Accuracy').textContent = `${accM15}%`;
+            document.getElementById('m15Progress').style.width = `${accM15}%`;
             if (graficoM15) graficoM15.data.datasets[0].data = [estatisticas.m15.acertos, estatisticas.m15.erros];
             
             document.getElementById('totalProfit').textContent = `R$${lucroTotal.toFixed(2)}`;
             document.getElementById('winStreak').textContent = sequenciaAcertos;
             document.getElementById('lossStreak').textContent = sequenciaErros;
-            const totalOps = estatisticas.m15.acertos + estatisticas.m15.erros;
+            const totalOps = estatisticas.m10.acertos + estatisticas.m10.erros + estatisticas.m15.acertos + estatisticas.m15.erros;
             document.getElementById('expectancy').textContent = totalOps > 0 ? (lucroTotal / totalOps).toFixed(2) : 0;
             
+            if (graficoM10) graficoM10.update();
             if (graficoM15) graficoM15.update();
             atualizarLogSinais();
             salvarDados();
@@ -399,8 +533,9 @@
             logDiv.innerHTML = logSinais.slice(-30).reverse().map(log => `<div class="log-entry ${log.sinal.toLowerCase()}">${log.hora} | ${log.par} | ${log.sinal} (${log.confianca}%) | ${log.resultado === 'acerto' ? 'ACERTOU' : (log.resultado === 'erro' ? 'ERROU' : 'PENDENTE')} | R$${log.lucro || 0}</div>`).join('');
         }
         
-        function validarSinal(precoEntradaVal, tempoEntradaVal, confianca, sinal) {
-            const tempoExpiracao = tempoEntradaVal + (15 * 60 * 1000);
+        function validarSinal(timeframe, sinal, precoEntradaVal, tempoEntradaVal, confianca) {
+            const minutosExpiracao = timeframe === 'm10' ? 10 : 15;
+            const tempoExpiracao = tempoEntradaVal + (minutosExpiracao * 60 * 1000);
             const intervalo = setInterval(() => {
                 if (Date.now() >= tempoExpiracao) {
                     clearInterval(intervalo);
@@ -410,20 +545,29 @@
                     else if (sinal === 'PUT') { resultado = precoSaida < precoEntradaVal ? 'acerto' : 'erro'; lucro = resultado === 'acerto' ? 85 : -100; }
                     
                     if (resultado) {
-                        if (resultado === 'acerto') { estatisticas.m15.acertos++; lucroTotal += 85; sequenciaAcertos++; sequenciaErros = 0; }
-                        else { estatisticas.m15.erros++; lucroTotal -= 100; sequenciaErros++; sequenciaAcertos = 0; }
+                        if (resultado === 'acerto') { 
+                            estatisticas[timeframe].acertos++; 
+                            lucroTotal += 85; 
+                            sequenciaAcertos++; 
+                            sequenciaErros = 0; 
+                        } else { 
+                            estatisticas[timeframe].erros++; 
+                            lucroTotal -= 100; 
+                            sequenciaErros++; 
+                            sequenciaAcertos = 0; 
+                        }
                         logSinais.push({ hora: new Date().toLocaleTimeString(), par: nomeParAtual, sinal: sinal, confianca: confianca, resultado: resultado, lucro: lucro });
                         atualizarDashboard();
-                        if (notificacaoAtiva) enviarNotificacao('Resultado M15', `${sinal} ${resultado === 'acerto' ? 'ACERTOU' : 'ERROU'} | R$${lucro}`);
+                        if (notificacaoAtiva) enviarNotificacao(`Resultado ${timeframe.toUpperCase()}`, `${sinal} ${resultado === 'acerto' ? 'ACERTOU' : 'ERROU'} | R$${lucro}`);
                         if (somAtivo && resultado === 'acerto') tocarBeep();
                     }
-                    sinalAtivo = false;
-                    document.getElementById('m15Timer').innerHTML = '';
+                    sinaisAtivos[timeframe] = false;
+                    document.getElementById(`${timeframe}Timer`).innerHTML = '';
                 } else {
                     const restante = Math.ceil((tempoExpiracao - Date.now()) / 1000);
                     const minutos = Math.floor(restante / 60);
                     const segundos = restante % 60;
-                    document.getElementById('m15Timer').innerHTML = `Expira em: ${minutos}:${segundos.toString().padStart(2,'0')}`;
+                    document.getElementById(`${timeframe}Timer`).innerHTML = `Expira em: ${minutos}:${segundos.toString().padStart(2,'0')}`;
                 }
             }, 1000);
         }
@@ -432,24 +576,44 @@
         function enviarNotificacao(titulo, corpo) { if (!notificacaoAtiva || !("Notification" in window) || Notification.permission !== "granted") return; new Notification(titulo, { body: corpo }); }
         function toggleSom() { somAtivo = !somAtivo; const btn = document.getElementById('soundToggle'); if (somAtivo) { btn.innerHTML = '<i class="fas fa-volume-up"></i> Som'; btn.classList.add('active'); } else { btn.innerHTML = '<i class="fas fa-volume-mute"></i> Mudo'; btn.classList.remove('active'); } }
         function toggleNotificacao() { notificacaoAtiva = !notificacaoAtiva; const btn = document.getElementById('notifyToggle'); if (notificacaoAtiva) { btn.innerHTML = '<i class="fas fa-bell"></i> Notify'; btn.classList.add('active'); } else { btn.innerHTML = '<i class="fas fa-bell-slash"></i> Silenciar'; btn.classList.remove('active'); } }
-        function resetarStats() { if (confirm('Resetar todas as estatísticas?')) { estatisticas = { m15: { acertos: 0, erros: 0 } }; logSinais = []; lucroTotal = 0; sequenciaAcertos = 0; sequenciaErros = 0; contagemDiaria = 0; atualizarDashboard(); } }
+        function resetarStats() { if (confirm('Resetar todas as estatísticas?')) { estatisticas = { m10: { acertos: 0, erros: 0 }, m15: { acertos: 0, erros: 0 } }; logSinais = []; lucroTotal = 0; sequenciaAcertos = 0; sequenciaErros = 0; contagemDiaria = 0; atualizarDashboard(); } }
         function exportarCSV() { let csv = 'Hora,Par,Sinal,Confianca,Resultado,Lucro\n'; logSinais.forEach(log => { csv += `${log.hora},${log.par},${log.sinal},${log.confianca},${log.resultado === 'acerto' ? 'ACERTO' : 'ERRO'},${log.lucro}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `signalpro_${new Date().toISOString().slice(0,19)}.csv`; a.click(); URL.revokeObjectURL(url); }
         
         function login() { const email = document.getElementById('email').value; const senha = document.getElementById('password').value; if (email === 'admin@signalpro.com' && senha === '123456') { document.getElementById('loginPanel').style.display = 'none'; document.getElementById('dashboard').classList.add('active'); iniciarApp(); } else { document.getElementById('loginError').textContent = 'Email ou senha incorretos'; document.getElementById('loginError').style.display = 'block'; } }
         function acessoRapido() { document.getElementById('loginPanel').style.display = 'none'; document.getElementById('dashboard').classList.add('active'); iniciarApp(); }
-        function logout() { document.getElementById('loginPanel').style.display = 'block'; document.getElementById('dashboard').classList.remove('active'); if (intervaloAtualizacao) clearInterval(intervaloAtualizacao); if (widgetTradingView) { try { widgetTradingView.remove(); } catch(e) {} } }
+        function logout() { 
+            document.getElementById('loginPanel').style.display = 'block'; 
+            document.getElementById('dashboard').classList.remove('active'); 
+            if (ws) ws.close(); 
+            if (intervaloFallback) clearInterval(intervaloFallback);
+            if (widgetTradingView) { try { widgetTradingView.remove(); } catch(e) {} } 
+        }
         function redimensionarGrafico(altura) { alturaGrafico = altura; document.getElementById('tradingview-chart').style.height = altura + 'px'; setTimeout(() => carregarGraficoTradingView(), 100); }
-        function atualizarCorBotao(sinal) { const btn = document.querySelector(`.pair-btn[data-par="${parAtual}"]`); if (btn) { btn.classList.remove('signal-call', 'signal-put', 'signal-wait'); if (sinal === 'CALL') btn.classList.add('signal-call'); else if (sinal === 'PUT') btn.classList.add('signal-put'); else btn.classList.add('signal-wait'); } }
+        function atualizarCoresBotoes(sinal, timeframe) { 
+            const btn = document.querySelector(`.pair-btn[data-par="${parAtual}"]`); 
+            if (btn && timeframe === 'm15') { 
+                btn.classList.remove('signal-call', 'signal-put', 'signal-wait'); 
+                if (sinal === 'CALL') btn.classList.add('signal-call'); 
+                else if (sinal === 'PUT') btn.classList.add('signal-put'); 
+                else btn.classList.add('signal-wait'); 
+            } 
+        }
         
-        function trocarPar(parId, simbolo, nome) {
+        function trocarPar(parId, simboloWsNovo, nome) {
             parAtual = parId;
-            simboloAtual = simbolo;
+            simboloWs = simboloWsNovo;
             nomeParAtual = nome;
             document.getElementById('currentPair').textContent = nome;
             document.querySelectorAll('.pair-btn').forEach(btn => { btn.classList.remove('active'); if (btn.getAttribute('data-par') === parId) btn.classList.add('active'); });
             historicoPrecos = [];
+            
+            // Se WebSocket estiver ativo, rescrever o símbolo
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'unsubscribe', symbol: simboloWs }));
+                ws.send(JSON.stringify({ type: 'subscribe', symbol: simboloWs }));
+            }
+            
             carregarGraficoTradingView();
-            buscarPrecoForex();
         }
         
         function carregarGraficoTradingView() {
@@ -458,7 +622,7 @@
             if (widgetTradingView) { try { widgetTradingView.remove(); } catch(e) {} }
             try {
                 new TradingView.widget({
-                    container_id: "tradingview-chart", symbol: simboloAtual, interval: "5",
+                    container_id: "tradingview-chart", symbol: simboloTradingView, interval: "5",
                     timezone: "America/Sao_Paulo", theme: "dark", style: "1", locale: "br",
                     toolbar_bg: "#1A1A1A", enable_publishing: false, allow_symbol_change: false,
                     width: "100%", height: alturaGrafico, studies: ["RSI@tv-basicstudies", "MACD@tv-basicstudies", "BB@tv-basicstudies"]
@@ -467,137 +631,241 @@
         }
         
         // ========== INDICADORES ==========
-        function calcularRSI(precos, p=14) { if (precos.length < p+1) return 50; let g=0, per=0; for(let i=precos.length-p; i<precos.length; i++){ const d=precos[i]-precos[i-1]; if(d>=0) g+=d; else per+=Math.abs(d); } const gm=g/p, pm=per/p; if(pm===0) return 100; return 100-(100/(1+gm/pm)); }
-        function calcularMACD(precos) { if(precos.length<26) return {macd:0,sinal:0}; const ema12=calcularEMA(precos,12); const ema26=calcularEMA(precos,26); const macd=ema12-ema26; return {macd:macd, sinal:macd*0.8}; }
-        function calcularEMA(precos,p) { const k=2/(p+1); let ema=precos[0]; for(let i=1;i<precos.length;i++) ema=precos[i]*k+ema*(1-k); return ema; }
-        function calcularBollinger(precos,p=20,d=2) { if(precos.length<p) return {superior:precos[precos.length-1],media:precos[precos.length-1],inferior:precos[precos.length-1]}; const media=precos.slice(-p).reduce((a,b)=>a+b,0)/p; const soma=precos.slice(-p).reduce((acc,val)=>acc+Math.pow(val-media,2),0); const desvio=Math.sqrt(soma/p); return {superior:media+desvio*d, media:media, inferior:media-desvio*d}; }
-        function calcularMedia(precos,p) { if(precos.length<p) return precos[precos.length-1]; return precos.slice(-p).reduce((a,b)=>a+b,0)/p; }
-        function calcularEstocastico(precos,p=14) { if(precos.length<p) return 50; const recentes=precos.slice(-p); const min=Math.min(...recentes); const max=Math.max(...recentes); const atual=recentes[recentes.length-1]; if(max===min) return 50; return ((atual-min)/(max-min))*100; }
-        function calcularADX(precos,p=14) { if(precos.length<p+1) return 25; let mov=[]; for(let i=1;i<precos.length;i++) mov.push(Math.abs(precos[i]-precos[i-1])); const mediaMov=mov.slice(-p).reduce((a,b)=>a+b,0)/p; const tendencia=Math.abs(precos[precos.length-1]-precos[precos.length-p]); return (tendencia/mediaMov)*100; }
+        function calcularRSI(precos, p=14) { 
+            if (precos.length < p+1) return 50; 
+            let g=0, per=0; 
+            for(let i=precos.length-p; i<precos.length; i++){ 
+                const d=precos[i]-precos[i-1]; 
+                if(d>=0) g+=d; 
+                else per+=Math.abs(d); 
+            } 
+            const gm=g/p, pm=per/p; 
+            if(pm===0) return 100; 
+            return 100-(100/(1+gm/pm)); 
+        }
         
-        // ========== GERAR SINAL ==========
-        function gerarSinal() {
+        function calcularMACD(precos) { 
+            if(precos.length<26) return {macd:0,sinal:0,histograma:0}; 
+            const ema12=calcularEMA(precos,12); 
+            const ema26=calcularEMA(precos,26); 
+            const macd=ema12-ema26; 
+            const sinal = calcularEMA(precos.map(() => macd), 9);
+            return {macd:macd, sinal:sinal, histograma:macd - sinal}; 
+        }
+        
+        function calcularEMA(precos,p) { 
+            const k=2/(p+1); 
+            let ema=precos[0]; 
+            for(let i=1;i<precos.length;i++) ema=precos[i]*k+ema*(1-k); 
+            return ema; 
+        }
+        
+        function calcularBollinger(precos,p=20,d=2) { 
+            if(precos.length<p) return {superior:precos[precos.length-1],media:precos[precos.length-1],inferior:precos[precos.length-1]}; 
+            const media=precos.slice(-p).reduce((a,b)=>a+b,0)/p; 
+            const soma=precos.slice(-p).reduce((acc,val)=>acc+Math.pow(val-media,2),0); 
+            const desvio=Math.sqrt(soma/p); 
+            return {superior:media+desvio*d, media:media, inferior:media-desvio*d}; 
+        }
+        
+        function calcularMedia(precos,p) { 
+            if(precos.length<p) return precos[precos.length-1]; 
+            return precos.slice(-p).reduce((a,b)=>a+b,0)/p; 
+        }
+        
+        function calcularEstocastico(precos,p=14) { 
+            if(precos.length<p) return 50; 
+            const recentes=precos.slice(-p); 
+            const min=Math.min(...recentes); 
+            const max=Math.max(...recentes); 
+            const atual=recentes[recentes.length-1]; 
+            if(max===min) return 50; 
+            return ((atual-min)/(max-min))*100; 
+        }
+        
+        function calcularADX(precos,p=14) { 
+            if(precos.length<p+1) return 25; 
+            let mov=[]; 
+            for(let i=1;i<precos.length;i++) mov.push(Math.abs(precos[i]-precos[i-1])); 
+            const mediaMov=mov.slice(-p).reduce((a,b)=>a+b,0)/p; 
+            const tendencia=Math.abs(precos[precos.length-1]-precos[precos.length-p]); 
+            return (tendencia/mediaMov)*100; 
+        }
+        
+        function calcularSuporteResistencia(precos) {
+            const recentes = precos.slice(-20);
+            const suporte = Math.min(...recentes);
+            const resistencia = Math.max(...recentes);
+            const precoAtual = recentes[recentes.length-1];
+            const distSuporte = ((precoAtual - suporte) / suporte) * 100;
+            const distResistencia = ((resistencia - precoAtual) / precoAtual) * 100;
+            return { suporte, resistencia, distSuporte, distResistencia };
+        }
+        
+        // ========== GERAR SINAIS (M10 E M15) ==========
+        function gerarSinais() {
             if (historicoPrecos.length < 60) return;
-            if (sinalAtivo) return;
             
-            const dados = historicoPrecos.slice(-45);
-            const rsi = calcularRSI(dados, 14);
-            const macd = calcularMACD(dados);
-            const bb = calcularBollinger(dados, 20, 2);
-            const media5 = calcularMedia(dados, 5);
-            const media20 = calcularMedia(dados, 20);
-            const media50 = calcularMedia(dados, 50);
-            const estocastico = calcularEstocastico(dados, 14);
-            const adx = calcularADX(dados, 14);
-            const precoAtualDado = dados[dados.length-1];
+            const timeframes = [
+                { nome: 10, periodos: 25, minutos: 10, cooldown: 10 },
+                { nome: 15, periodos: 35, minutos: 15, cooldown: 15 }
+            ];
             
-            const tendenciaAltaForte = media5 > media20 && media20 > media50;
-            const tendenciaBaixaForte = media5 < media20 && media20 < media50;
-            const precoAbaixoBB = precoAtualDado < bb.inferior;
-            const precoAcimaBB = precoAtualDado > bb.superior;
-            const mercadoLateral = adx < 20;
-            
-            let sinal = 'AGUARDE';
-            let confianca = 0;
-            let motivos = [];
-            
-            if (!mercadoLateral) {
-                if (rsi < 25 && estocastico < 20 && tendenciaAltaForte && adx > 30) {
-                    sinal = 'CALL'; confianca = 96;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `ADX:${adx.toFixed(0)}`];
-                }
-                else if (rsi < 22 && precoAbaixoBB && macd.macd > macd.sinal && adx > 25) {
-                    sinal = 'CALL'; confianca = 95;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `BB_INF`, `MACD_BULL`];
-                }
-                else if (rsi < 28 && estocastico < 25 && media5 > media20 && media20 > media50 && adx > 28) {
-                    sinal = 'CALL'; confianca = 94;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `UPTREND`];
-                }
-                else if (rsi > 75 && estocastico > 80 && tendenciaBaixaForte && adx > 30) {
-                    sinal = 'PUT'; confianca = 96;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `ADX:${adx.toFixed(0)}`];
-                }
-                else if (rsi > 78 && precoAcimaBB && macd.macd < macd.sinal && adx > 25) {
-                    sinal = 'PUT'; confianca = 95;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `BB_SUP`, `MACD_BEAR`];
-                }
-                else if (rsi > 72 && estocastico > 75 && media5 < media20 && media20 < media50 && adx > 28) {
-                    sinal = 'PUT'; confianca = 94;
-                    motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `DOWNTREND`];
-                }
-            }
-            
-            const agora = Date.now();
-            const podeSinal = sinal !== 'AGUARDE' && confianca >= confiancaMinima && contagemDiaria < maxSinaisDiarios && (agora - ultimoTempoSinal >= cooldownMinutos * 60 * 1000) && !sinalAtivo;
-            
-            if (podeSinal) {
-                sinalAtivo = true;
-                const precoEntrada = precoAtual;
-                const tempoEntrada = agora;
-                ultimoTempoSinal = agora;
-                contagemDiaria++;
+            timeframes.forEach(tf => {
+                if (sinaisAtivos[`m${tf.nome}`]) return;
                 
-                tocarBeep();
-                if (sinal === 'CALL') { setTimeout(tocarBeep, 200); setTimeout(tocarBeep, 400); }
-                enviarNotificacao(`SINAL - ${nomeParAtual}`, `${sinal} com ${confianca}% de confiança!`);
-                document.getElementById('lastAlert').innerHTML = `${sinal} (${confianca}%) às ${new Date().toLocaleTimeString()}`;
+                const dados = historicoPrecos.slice(-tf.periodos);
+                const rsi = calcularRSI(dados, 14);
+                const macd = calcularMACD(dados);
+                const bb = calcularBollinger(dados, 20, 2);
+                const media5 = calcularMedia(dados, 5);
+                const media10 = calcularMedia(dados, 10);
+                const media20 = calcularMedia(dados, 20);
+                const media50 = calcularMedia(dados, 50);
+                const estocastico = calcularEstocastico(dados, 14);
+                const adx = calcularADX(dados, 14);
+                const { suporte, resistencia, distSuporte, distResistencia } = calcularSuporteResistencia(dados);
+                const precoAtualDado = dados[dados.length-1];
                 
-                logSinais.push({ hora: new Date().toLocaleTimeString(), par: nomeParAtual, sinal: sinal, confianca: confianca, resultado: 'pendente', lucro: 0 });
-                validarSinal(precoEntrada, tempoEntrada, confianca, sinal);
-                atualizarDashboard();
-            }
-            
-            const sinalEl = document.getElementById('m15Signal');
-            if (sinalEl) {
-                sinalEl.textContent = sinal === 'CALL' ? 'COMPRA' : (sinal === 'PUT' ? 'VENDA' : 'AGUARDE');
-                sinalEl.className = 'signal-value ' + (sinal === 'CALL' ? 'call' : (sinal === 'PUT' ? 'put' : 'wait'));
-            }
-            
-            const probEl = document.getElementById('m15Prob');
-            if (probEl) {
-                if (sinal !== 'AGUARDE') probEl.textContent = `${sinal === 'CALL' ? 'COMPRA' : 'VENDA'} ${confianca}%`;
-                else if (mercadoLateral) probEl.textContent = `MERCADO LATERAL - AGUARDAR`;
-                else probEl.textContent = `MÍNIMO ${confiancaMinima}% PARA SINAL`;
-            }
-            
-            const confEl = document.getElementById('m15Confidence');
-            if (confEl && confianca >= confiancaMinima) {
-                confEl.style.width = `${confianca}%`;
-                confEl.className = `confidence-fill ${sinal === 'CALL' ? 'call' : (sinal === 'PUT' ? 'put' : '')}`;
-            } else if (confEl) confEl.style.width = '0%';
-            
-            atualizarCorBotao(sinal);
-            
-            let statusTexto = '';
-            if (sinal !== 'AGUARDE' && confianca >= confiancaMinima) {
-                statusTexto = `<strong style="color:#00AA55">SINAL ATIVO! Confiança: ${confianca}%</strong><br>${motivos.join(' | ')}<br><br>`;
-            } else if (mercadoLateral) {
-                statusTexto = `<strong style="color:#FF4444">MERCADO LATERAL (ADX ${adx.toFixed(0)})</strong><br>Não operar até definir tendência.<br><br>`;
-            } else {
-                statusTexto = `<strong style="color:#FF8C00">Aguardando condições ideais...</strong><br>Confiança mínima: ${confiancaMinima}%<br><br>`;
-            }
-            
-            document.getElementById('analysis').innerHTML = `
-                <strong>${nomeParAtual} - M15</strong><br><br>
-                ${statusTexto}
-                RSI: ${rsi.toFixed(1)} ${rsi < 30 ? '(Sobrevendido)' : (rsi > 70 ? '(Sobrecomprado)' : '(Neutro)')}<br>
-                Estocástico: ${estocastico.toFixed(0)} ${estocastico < 20 ? '(Sobrevendido)' : (estocastico > 80 ? '(Sobrecomprado)' : '(Neutro)')}<br>
-                ADX: ${adx.toFixed(0)} ${adx > 25 ? '(Tendência Forte)' : (adx < 20 ? '(Mercado Lateral - EVITAR)' : '(Tendência Fraca)')}<br>
-                MACD: ${macd.macd > macd.sinal ? 'Bullish' : 'Bearish'}<br>
-                Bollinger: ${precoAtualDado < bb.inferior ? 'Abaixo da banda inferior' : (precoAtualDado > bb.superior ? 'Acima da banda superior' : 'Dentro das bandas')}<br>
-                Tendência: ${tendenciaAltaForte ? 'ALTA FORTE' : (tendenciaBaixaForte ? 'BAIXA FORTE' : 'LATERAL')}
-            `;
-            
-            document.getElementById('indicators').innerHTML = `
-                <div class="indicator">RSI<br><span class="indicator-value">${rsi.toFixed(0)}</span></div>
-                <div class="indicator">Estoc<br><span class="indicator-value">${estocastico.toFixed(0)}</span></div>
-                <div class="indicator">ADX<br><span class="indicator-value">${adx.toFixed(0)}</span></div>
-                <div class="indicator">MACD<br><span class="indicator-value">${macd.macd > macd.sinal ? 'BULL' : 'BEAR'}</span></div>
-                <div class="indicator">BB<br><span class="indicator-value">${precoAtualDado < bb.inferior ? 'LOWER' : (precoAtualDado > bb.superior ? 'UPPER' : 'MID')}</span></div>
-                <div class="indicator">Modo<br><span class="indicator-value">CONSERV</span></div>
-            `;
-            
+                const tendenciaAltaForte = media5 > media10 && media10 > media20 && media20 > media50;
+                const tendenciaBaixaForte = media5 < media10 && media10 < media20 && media20 < media50;
+                const tendenciaAlta = media5 > media20;
+                const tendenciaBaixa = media5 < media20;
+                const precoAbaixoBB = precoAtualDado < bb.inferior;
+                const precoAcimaBB = precoAtualDado > bb.superior;
+                const mercadoLateral = adx < 20;
+                const pertoSuporte = distSuporte < 0.15;
+                const pertoResistencia = distResistencia < 0.15;
+                const macdBullish = macd.histograma > 0 && macd.macd > macd.sinal;
+                const macdBearish = macd.histograma < 0 && macd.macd < macd.sinal;
+                
+                let sinal = 'AGUARDE';
+                let confianca = 0;
+                let motivos = [];
+                
+                // CONDIÇÕES PARA CALL (COMPRA)
+                if (!mercadoLateral) {
+                    if (rsi < 25 && estocastico < 20 && tendenciaAltaForte && adx > 30) {
+                        sinal = 'CALL'; confianca = 96;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `ADX:${adx.toFixed(0)}`, `TREND_STRONG`];
+                    }
+                    else if (rsi < 22 && precoAbaixoBB && macdBullish && adx > 25) {
+                        sinal = 'CALL'; confianca = 95;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `BB_INF`, `MACD_BULL`, `ADX:${adx.toFixed(0)}`];
+                    }
+                    else if (rsi < 28 && estocastico < 25 && pertoSuporte && tendenciaAlta && adx > 25) {
+                        sinal = 'CALL'; confianca = 94;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `SUP:${distSuporte.toFixed(2)}%`, `UPTREND`];
+                    }
+                    else if (rsi < 30 && tendenciaAltaForte && macdBullish && adx > 28) {
+                        sinal = 'CALL'; confianca = 93;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `MACD_BULL`, `UPTREND`, `ADX:${adx.toFixed(0)}`];
+                    }
+                    else if (rsi < 32 && precoAbaixoBB && pertoSuporte) {
+                        sinal = 'CALL'; confianca = 92;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `BB_INF`, `SUP:${distSuporte.toFixed(2)}%`];
+                    }
+                    
+                    // CONDIÇÕES PARA PUT (VENDA)
+                    else if (rsi > 75 && estocastico > 80 && tendenciaBaixaForte && adx > 30) {
+                        sinal = 'PUT'; confianca = 96;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `ADX:${adx.toFixed(0)}`, `TREND_STRONG`];
+                    }
+                    else if (rsi > 78 && precoAcimaBB && macdBearish && adx > 25) {
+                        sinal = 'PUT'; confianca = 95;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `BB_SUP`, `MACD_BEAR`, `ADX:${adx.toFixed(0)}`];
+                    }
+                    else if (rsi > 72 && estocastico > 75 && pertoResistencia && tendenciaBaixa && adx > 25) {
+                        sinal = 'PUT'; confianca = 94;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `ESTOC:${estocastico.toFixed(0)}`, `RES:${distResistencia.toFixed(2)}%`, `DOWNTREND`];
+                    }
+                    else if (rsi > 70 && tendenciaBaixaForte && macdBearish && adx > 28) {
+                        sinal = 'PUT'; confianca = 93;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `MACD_BEAR`, `DOWNTREND`, `ADX:${adx.toFixed(0)}`];
+                    }
+                    else if (rsi > 68 && precoAcimaBB && pertoResistencia) {
+                        sinal = 'PUT'; confianca = 92;
+                        motivos = [`RSI:${rsi.toFixed(0)}`, `BB_SUP`, `RES:${distResistencia.toFixed(2)}%`];
+                    }
+                }
+                
+                const agora = Date.now();
+                const podeSinal = sinal !== 'AGUARDE' && confianca >= 85 && contagemDiaria < maxSinaisDiarios && 
+                                 (agora - ultimoTempoSinal[`m${tf.nome}`] >= tf.cooldown * 60 * 1000) && !sinaisAtivos[`m${tf.nome}`];
+                
+                if (podeSinal) {
+                    sinaisAtivos[`m${tf.nome}`] = true;
+                    const precoEntrada = precoAtual;
+                    const tempoEntrada = agora;
+                    ultimoTempoSinal[`m${tf.nome}`] = agora;
+                    contagemDiaria++;
+                    
+                    tocarBeep();
+                    if (sinal === 'CALL') { setTimeout(tocarBeep, 200); setTimeout(tocarBeep, 400); }
+                    enviarNotificacao(`SINAL ${tf.nome}MIN - ${nomeParAtual}`, `${sinal} com ${confianca}% de confiança!`);
+                    document.getElementById('lastAlert').innerHTML = `${sinal} (${confianca}%) às ${new Date().toLocaleTimeString()}`;
+                    
+                    logSinais.push({ hora: new Date().toLocaleTimeString(), par: nomeParAtual, sinal: sinal, confianca: confianca, resultado: 'pendente', lucro: 0 });
+                    validarSinal(`m${tf.nome}`, sinal, precoEntrada, tempoEntrada, confianca);
+                    atualizarDashboard();
+                }
+                
+                // Atualizar UI
+                const sinalEl = document.getElementById(`m${tf.nome}Signal`);
+                if (sinalEl) {
+                    sinalEl.textContent = sinal === 'CALL' ? 'COMPRA' : (sinal === 'PUT' ? 'VENDA' : 'AGUARDE');
+                    sinalEl.className = 'signal-value ' + (sinal === 'CALL' ? 'call' : (sinal === 'PUT' ? 'put' : 'wait'));
+                }
+                
+                const probEl = document.getElementById(`m${tf.nome}Prob`);
+                if (probEl) {
+                    if (sinal !== 'AGUARDE') probEl.textContent = `${sinal === 'CALL' ? 'COMPRA' : 'VENDA'} ${confianca}%`;
+                    else if (mercadoLateral) probEl.textContent = `MERCADO LATERAL - AGUARDAR`;
+                    else probEl.textContent = `MÍNIMO 85% PARA SINAL`;
+                }
+                
+                const confEl = document.getElementById(`m${tf.nome}Confidence`);
+                if (confEl && confianca >= 85) {
+                    confEl.style.width = `${confianca}%`;
+                    confEl.className = `confidence-fill ${sinal === 'CALL' ? 'call' : (sinal === 'PUT' ? 'put' : '')}`;
+                } else if (confEl) {
+                    confEl.style.width = '0%';
+                }
+                
+                if (tf.nome === 15) {
+                    atualizarCoresBotoes(sinal, 'm15');
+                    
+                    let statusTexto = '';
+                    if (sinal !== 'AGUARDE' && confianca >= 85) {
+                        statusTexto = `<strong style="color:#00AA55">SINAL ATIVO! Confiança: ${confianca}%</strong><br>${motivos.join(' | ')}<br><br>`;
+                    } else if (mercadoLateral) {
+                        statusTexto = `<strong style="color:#FF4444">MERCADO LATERAL (ADX ${adx.toFixed(0)})</strong><br>Não operar até definir tendência.<br><br>`;
+                    } else {
+                        statusTexto = `<strong style="color:#FF8C00">Aguardando condições ideais...</strong><br>Confiança mínima: 85%<br><br>`;
+                    }
+                    
+                    document.getElementById('analysis').innerHTML = `
+                        <strong>${nomeParAtual}</strong><br><br>
+                        ${statusTexto}
+                        RSI: ${rsi.toFixed(1)} ${rsi < 30 ? '(Sobrevendido)' : (rsi > 70 ? '(Sobrecomprado)' : '(Neutro)')}<br>
+                        Estocástico: ${estocastico.toFixed(0)} ${estocastico < 20 ? '(Sobrevendido)' : (estocastico > 80 ? '(Sobrecomprado)' : '(Neutro)')}<br>
+                        ADX: ${adx.toFixed(0)} ${adx > 25 ? '(Tendência Forte)' : (adx < 20 ? '(Mercado Lateral - EVITAR)' : '(Tendência Fraca)')}<br>
+                        MACD: ${macdBullish ? 'Bullish' : (macdBearish ? 'Bearish' : 'Neutro')}<br>
+                        Bollinger: ${precoAtualDado < bb.inferior ? 'Abaixo da banda inferior' : (precoAtualDado > bb.superior ? 'Acima da banda superior' : 'Dentro das bandas')}<br>
+                        Suporte/Resistência: ${pertoSuporte ? 'Próximo ao SUPORTE' : (pertoResistencia ? 'Próximo à RESISTÊNCIA' : 'Meio da faixa')}<br>
+                        Tendência: ${tendenciaAltaForte ? 'ALTA FORTE' : (tendenciaBaixaForte ? 'BAIXA FORTE' : 'LATERAL')}
+                    `;
+                    
+                    document.getElementById('indicators').innerHTML = `
+                        <div class="indicator">RSI<br><span class="indicator-value">${rsi.toFixed(0)}</span></div>
+                        <div class="indicator">Estoc<br><span class="indicator-value">${estocastico.toFixed(0)}</span></div>
+                        <div class="indicator">ADX<br><span class="indicator-value">${adx.toFixed(0)}</span></div>
+                        <div class="indicator">MACD<br><span class="indicator-value">${macdBullish ? 'BULL' : (macdBearish ? 'BEAR' : 'NEU')}</span></div>
+                        <div class="indicator">BB<br><span class="indicator-value">${precoAtualDado < bb.inferior ? 'LOWER' : (precoAtualDado > bb.superior ? 'UPPER' : 'MID')}</span></div>
+                        <div class="indicator">S/R<br><span class="indicator-value">${pertoSuporte ? 'SUP' : (pertoResistencia ? 'RES' : 'MID')}</span></div>
+                    `;
+                }
+            });
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('pt-BR');
         }
         
@@ -607,10 +875,13 @@
             atualizarRelogio();
             setInterval(atualizarRelogio, 1000);
             setTimeout(() => carregarGraficoTradingView(), 500);
-            buscarPrecoForex();
-            intervaloAtualizacao = setInterval(buscarPrecoForex, 5000);
             
+            // Iniciar WebSocket
+            conectarWebSocket();
+            
+            const ctxM10 = document.getElementById('chartM10').getContext('2d');
             const ctxM15 = document.getElementById('chartM15').getContext('2d');
+            graficoM10 = new Chart(ctxM10, { type: 'doughnut', data: { labels: ['Acertos', 'Erros'], datasets: [{ data: [0, 0], backgroundColor: ['#00AA55', '#FF4444'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#CCCCCC' } } } } });
             graficoM15 = new Chart(ctxM15, { type: 'doughnut', data: { labels: ['Acertos', 'Erros'], datasets: [{ data: [0, 0], backgroundColor: ['#00AA55', '#FF4444'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#CCCCCC' } } } } });
             
             carregarBackup();
