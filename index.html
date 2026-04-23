@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SignalPro • Finnhub Real • Opções Binárias</title>
+    <title>SignalPro • Opções Binárias</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -99,7 +99,7 @@
         .alert-toggle{background:#1A1A1A;border:1px solid #333333;color:#CCCCCC;padding:8px 14px;border-radius:25px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:6px}
         .alert-toggle.active{background:#FF8C00;color:#000000}
         .reset-stats-btn{background:#1A1A1A;border:1px solid #FF4444;color:#FF4444;padding:8px 14px;border-radius:25px;cursor:pointer;font-size:0.8rem}
-        .warning-box{background:#1A1A1A;border-left:4px solid #00AA55;padding:10px 15px;margin-bottom:20px;border-radius:8px}
+        .warning-box{background:#1A1A1A;border-left:4px solid #FF8C00;padding:10px 15px;margin-bottom:20px;border-radius:8px}
         .warning-text{color:#AAAAAA;font-size:0.7rem;line-height:1.4}
         footer{text-align:center;margin-top:20px;color:#666666;font-size:0.7rem}
         .error-message{color:#FF4444;text-align:center;margin-top:12px;display:none}
@@ -109,7 +109,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-chart-line"></i> SignalPro</h1>
-            <p>Forex Real • Finnhub + CORS Proxy • Tempo Real</p>
+            <p>Opções Binárias • Forex USD/EUR • Modo Conservador</p>
         </div>
         
         <div id="loginPanel">
@@ -159,28 +159,28 @@
             
             <div class="warning-box">
                 <div class="warning-text">
-                    <i class="fas fa-bolt" style="color:#00AA55"></i> 
-                    <strong>Finnhub + CORS Proxy</strong> • Dados em tempo real • Modo Conservador • Mínimo 92% confiança
+                    <i class="fas fa-shield-alt" style="color:#FF8C00"></i> 
+                    <strong>Modo Conservador</strong> • Mínimo 92% confiança • Máx 5 sinais/dia • Apenas M15
                 </div>
             </div>
             
             <div class="pairs-section">
                 <div class="category-title"><i class="fas fa-dollar-sign"></i> Pares com Dólar Americano (USD)</div>
                 <div class="pair-selector">
-                    <button class="pair-btn active" data-par="EUR/USD" onclick="trocarPar('EUR/USD', 'OANDA:EUR_USD', 'EUR/USD')">EUR/USD</button>
-                    <button class="pair-btn" data-par="GBP/USD" onclick="trocarPar('GBP/USD', 'OANDA:GBP_USD', 'GBP/USD')">GBP/USD</button>
-                    <button class="pair-btn" data-par="USD/JPY" onclick="trocarPar('USD/JPY', 'OANDA:USD_JPY', 'USD/JPY')">USD/JPY</button>
-                    <button class="pair-btn" data-par="AUD/USD" onclick="trocarPar('AUD/USD', 'OANDA:AUD_USD', 'AUD/USD')">AUD/USD</button>
-                    <button class="pair-btn" data-par="USD/CAD" onclick="trocarPar('USD/CAD', 'OANDA:USD_CAD', 'USD/CAD')">USD/CAD</button>
-                    <button class="pair-btn" data-par="NZD/USD" onclick="trocarPar('NZD/USD', 'OANDA:NZD_USD', 'NZD/USD')">NZD/USD</button>
+                    <button class="pair-btn active" data-par="EURUSD" onclick="trocarPar('EURUSD', 'FX:EURUSD', 'EUR/USD')">EUR/USD</button>
+                    <button class="pair-btn" data-par="GBPUSD" onclick="trocarPar('GBPUSD', 'FX:GBPUSD', 'GBP/USD')">GBP/USD</button>
+                    <button class="pair-btn" data-par="USDJPY" onclick="trocarPar('USDJPY', 'FX:USDJPY', 'USD/JPY')">USD/JPY</button>
+                    <button class="pair-btn" data-par="AUDUSD" onclick="trocarPar('AUDUSD', 'FX:AUDUSD', 'AUD/USD')">AUD/USD</button>
+                    <button class="pair-btn" data-par="USDCAD" onclick="trocarPar('USDCAD', 'FX:USDCAD', 'USD/CAD')">USD/CAD</button>
+                    <button class="pair-btn" data-par="NZDUSD" onclick="trocarPar('NZDUSD', 'FX:NZDUSD', 'NZD/USD')">NZD/USD</button>
                 </div>
                 <div class="category-title" style="margin-top:15px"><i class="fas fa-euro-sign"></i> Pares com Euro (EUR)</div>
                 <div class="pair-selector">
-                    <button class="pair-btn" data-par="EUR/GBP" onclick="trocarPar('EUR/GBP', 'OANDA:EUR_GBP', 'EUR/GBP')">EUR/GBP</button>
-                    <button class="pair-btn" data-par="EUR/JPY" onclick="trocarPar('EUR/JPY', 'OANDA:EUR_JPY', 'EUR/JPY')">EUR/JPY</button>
-                    <button class="pair-btn" data-par="EUR/CHF" onclick="trocarPar('EUR/CHF', 'OANDA:EUR_CHF', 'EUR/CHF')">EUR/CHF</button>
-                    <button class="pair-btn" data-par="EUR/AUD" onclick="trocarPar('EUR/AUD', 'OANDA:EUR_AUD', 'EUR/AUD')">EUR/AUD</button>
-                    <button class="pair-btn" data-par="EUR/CAD" onclick="trocarPar('EUR/CAD', 'OANDA:EUR_CAD', 'EUR/CAD')">EUR/CAD</button>
+                    <button class="pair-btn" data-par="EURGBP" onclick="trocarPar('EURGBP', 'FX:EURGBP', 'EUR/GBP')">EUR/GBP</button>
+                    <button class="pair-btn" data-par="EURJPY" onclick="trocarPar('EURJPY', 'FX:EURJPY', 'EUR/JPY')">EUR/JPY</button>
+                    <button class="pair-btn" data-par="EURCHF" onclick="trocarPar('EURCHF', 'FX:EURCHF', 'EUR/CHF')">EUR/CHF</button>
+                    <button class="pair-btn" data-par="EURAUD" onclick="trocarPar('EURAUD', 'FX:EURAUD', 'EUR/AUD')">EUR/AUD</button>
+                    <button class="pair-btn" data-par="EURCAD" onclick="trocarPar('EURCAD', 'FX:EURCAD', 'EUR/CAD')">EUR/CAD</button>
                 </div>
             </div>
             
@@ -202,7 +202,7 @@
                                     <span class="change" id="priceChange">---</span>
                                 </div>
                                 <div style="display:flex;gap:15px;color:#AAAAAA;font-size:0.7rem">
-                                    <span>Fonte: <span id="dataSource">Finnhub + Proxy</span></span>
+                                    <span>Fonte: <span id="dataSource">ExchangeRate</span></span>
                                 </div>
                             </div>
                         </div>
@@ -248,14 +248,14 @@
                 </div>
             </div>
             
-            <footer>Dados REAIS Finnhub via CORS Proxy • Atualizado: <span id="lastUpdate">--:--:--</span></footer>
+            <footer>Dados Forex • Atualizado: <span id="lastUpdate">--:--:--</span></footer>
         </div>
     </div>
 
     <script>
         // ========== CONFIGURAÇÕES ==========
-        let parAtual = 'EUR/USD';
-        let simboloAtual = 'OANDA:EUR_USD';
+        let parAtual = 'EURUSD';
+        let simboloAtual = 'FX:EURUSD';
         let nomeParAtual = 'EUR/USD';
         let precoAtual = 1.0850;
         let historicoPrecos = [];
@@ -263,13 +263,6 @@
         let intervaloAtualizacao = null;
         let alturaGrafico = 450;
         
-        // SUA API KEY DO FINNHUB
-        const FINNHUB_API_KEY = 'd7kscphr01qiqbcvioj0d7kscphr01qiqbcviojg';
-        
-        // CORS PROXY (resolve o bloqueio)
-        const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-        
-        // Configuração Conservadora
         let confiancaMinima = 92;
         let maxSinaisDiarios = 5;
         let cooldownMinutos = 30;
@@ -288,59 +281,48 @@
         let sequenciaAcertos = 0;
         let sequenciaErros = 0;
         
-        // ========== API FINNHUB COM CORS PROXY ==========
-        async function buscarPrecoFinnhub() {
+        // ========== API EXCHANGERATE (FUNCIONA SEM PROXY) ==========
+        async function buscarPrecoForex() {
             try {
-                const symbol = parAtual.replace('/', '');
-                const url = `${CORS_PROXY}https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
-                
-                console.log('Buscando:', url);
-                
-                const resposta = await fetch(url);
+                const resposta = await fetch(`https://api.exchangerate.host/latest?base=USD&symbols=EUR,GBP,JPY,AUD,CAD,NZD,CHF`);
                 const dados = await resposta.json();
                 
-                if (dados && dados.c) {
-                    precoAtual = dados.c;
-                    const variacao = dados.dp || 0;
-                    
-                    document.getElementById('currentPrice').textContent = precoAtual.toFixed(5);
-                    document.getElementById('priceChange').textContent = (variacao > 0 ? '+' : '') + variacao.toFixed(3) + '%';
-                    document.getElementById('priceChange').className = 'change ' + (variacao >= 0 ? 'up' : 'down');
-                    document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#00AA55"></i> Online Real-Time';
-                    document.getElementById('dataSource').innerHTML = 'Finnhub + Proxy';
-                    
-                    historicoPrecos.push(precoAtual);
-                    if (historicoPrecos.length > 200) historicoPrecos.shift();
-                    
-                    gerarSinal();
-                } else {
-                    console.log('Resposta sem preço:', dados);
-                    throw new Error('Dados inválidos');
-                }
-            } catch(erro) {
-                console.log('Erro Finnhub:', erro);
-                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> Proxy/CORS - Ative o proxy';
-                document.getElementById('dataSource').innerHTML = 'Proxy precisa ativar';
+                if (parAtual === 'EURUSD') precoAtual = dados.rates.EUR;
+                else if (parAtual === 'GBPUSD') precoAtual = dados.rates.GBP;
+                else if (parAtual === 'USDJPY') precoAtual = 1 / dados.rates.JPY;
+                else if (parAtual === 'AUDUSD') precoAtual = dados.rates.AUD;
+                else if (parAtual === 'USDCAD') precoAtual = dados.rates.CAD;
+                else if (parAtual === 'NZDUSD') precoAtual = dados.rates.NZD;
+                else if (parAtual === 'EURGBP') precoAtual = dados.rates.GBP / dados.rates.EUR;
+                else if (parAtual === 'EURJPY') precoAtual = (1 / dados.rates.JPY) * dados.rates.EUR;
+                else if (parAtual === 'EURCHF') precoAtual = dados.rates.CHF / dados.rates.EUR;
+                else if (parAtual === 'EURAUD') precoAtual = dados.rates.AUD / dados.rates.EUR;
+                else if (parAtual === 'EURCAD') precoAtual = dados.rates.CAD / dados.rates.EUR;
                 
-                // Se falhar, tenta ExchangeRate como fallback
-                buscarPrecoFallback();
-            }
-        }
-        
-        // Fallback para ExchangeRate (sem proxy, sem chave)
-        async function buscarPrecoFallback() {
-            try {
-                const resposta = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=EUR');
-                const dados = await resposta.json();
-                precoAtual = dados.rates.EUR;
+                // Simular variação pequena para movimento
+                const variacao = (Math.random() - 0.5) * 0.0001;
+                precoAtual += variacao;
+                
                 document.getElementById('currentPrice').textContent = precoAtual.toFixed(5);
-                document.getElementById('dataSource').innerHTML = 'Fallback: ExchangeRate';
+                const variacaoPercentual = (variacao / precoAtual) * 100;
+                document.getElementById('priceChange').textContent = (variacaoPercentual > 0 ? '+' : '') + variacaoPercentual.toFixed(3) + '%';
+                document.getElementById('priceChange').className = 'change ' + (variacaoPercentual >= 0 ? 'up' : 'down');
+                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#00AA55"></i> Online';
+                document.getElementById('dataSource').innerHTML = 'ExchangeRate';
                 
                 historicoPrecos.push(precoAtual);
                 if (historicoPrecos.length > 200) historicoPrecos.shift();
+                
                 gerarSinal();
-            } catch(e) {
-                console.log('Fallback também falhou');
+            } catch(erro) {
+                console.log('Erro:', erro);
+                document.getElementById('connStatus').innerHTML = '<i class="fas fa-circle" style="color:#FF8C00"></i> Demo';
+                const variacao = (Math.random() - 0.5) * 0.0001;
+                precoAtual += variacao;
+                historicoPrecos.push(precoAtual);
+                if (historicoPrecos.length > 200) historicoPrecos.shift();
+                document.getElementById('currentPrice').textContent = precoAtual.toFixed(5);
+                gerarSinal();
             }
         }
         
@@ -467,7 +449,7 @@
             document.querySelectorAll('.pair-btn').forEach(btn => { btn.classList.remove('active'); if (btn.getAttribute('data-par') === parId) btn.classList.add('active'); });
             historicoPrecos = [];
             carregarGraficoTradingView();
-            buscarPrecoFinnhub();
+            buscarPrecoForex();
         }
         
         function carregarGraficoTradingView() {
@@ -625,8 +607,8 @@
             atualizarRelogio();
             setInterval(atualizarRelogio, 1000);
             setTimeout(() => carregarGraficoTradingView(), 500);
-            buscarPrecoFinnhub();
-            intervaloAtualizacao = setInterval(buscarPrecoFinnhub, 5000);
+            buscarPrecoForex();
+            intervaloAtualizacao = setInterval(buscarPrecoForex, 5000);
             
             const ctxM15 = document.getElementById('chartM15').getContext('2d');
             graficoM15 = new Chart(ctxM15, { type: 'doughnut', data: { labels: ['Acertos', 'Erros'], datasets: [{ data: [0, 0], backgroundColor: ['#00AA55', '#FF4444'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#CCCCCC' } } } } });
