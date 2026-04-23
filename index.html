@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalPro • Cliente</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+        body{background:#0a0e17;padding:20px}
+        .container{max-width:500px;margin:0 auto}
+        .card{background:#1a1a2e;border-radius:16px;padding:20px;margin-bottom:20px;border:1px solid #c9a84c}
+        .btn{width:100%;padding:14px;background:#c9a84c;border:none;border-radius:10px;font-weight:700;cursor:pointer;margin-top:10px}
+        input{width:100%;padding:14px;background:#0f141e;border:1px solid #2a3a5e;border-radius:10px;color:#fff;margin-bottom:10px}
+        .sinal{font-size:1.8rem;font-weight:800;padding:15px;border-radius:30px;text-align:center}
+        .call{background:#00aa55;color:#fff}
+        .put{background:#e94560;color:#fff}
+        .wait{background:#ff8c00;color:#000}
+        .conf-bar{height:6px;background:#2a3a5e;border-radius:3px;margin:10px 0}
+        .conf-fill{height:100%;width:0%;background:#00aa55}
+        .hidden{display:none}
+        .flex{display:flex;gap:10px;margin-top:15px}
+        .stat{flex:1;background:#0f141e;padding:10px;border-radius:12px;text-align:center}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="container">
+    <div class="card" style="text-align:center"><h1 style="color:#c9a84c">📊 SignalPro Cliente</h1></div>
+
+    <div id="loginArea" class="card">
+        <input type="email" id="email" placeholder="seu@email.com">
+        <input type="password" id="senha" placeholder="senha">
+        <button class="btn" onclick="login()">Entrar</button>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <div class="card">
+            <div id="sinal" class="sinal wait">AGUARDANDO</div>
+            <div class="conf-bar"><div id="confFill" class="conf-fill"></div></div>
+            <div id="preco" style="color:#8ba0c0;text-align:center;margin-top:8px">Aguardando sinal...</div>
+            <div class="flex">
+                <div class="stat"><div>✅ Acertos</div><div id="acertos" style="font-size:1.5rem;color:#00aa55">0</div></div>
+                <div class="stat"><div>❌ Erros</div><div id="erros" style="font-size:1.5rem;color:#e94560">0</div></div>
+                <div class="stat"><div>💰 Lucro</div><div id="lucro" style="font-size:1.2rem">R$0</div></div>
+            </div>
+            <button class="btn" style="margin-top:15px;background:#e94560;color:#fff" onclick="logout()">Sair</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://wedhebcoxljyeoxhgaob.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlZGhlYmNveGxqeWVveGhnYW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4OTgwNDgsImV4cCI6MjA5MjQ3NDA0OH0._Xnqxp6YSazOK37xP5qSi5gOuThvqGm5Kw_xmWZU8XQ';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let cliente = null, channel = null;
+
+    async function login() {
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+        const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+        if(error) { alert('Credenciais inválidas'); return; }
+        const { data: c } = await supabase.from('clientes').select('*').eq('email', email).single();
+        if(!c || !c.ativo) { alert('Cliente inativo'); return; }
+        cliente = c;
+        document.getElementById('loginArea').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        carregarStats();
+        channel = new BroadcastChannel('signalpro');
+        channel.onmessage = (e) => {
+            if(e.data.type === 'SINAL') {
+                const el = document.getElementById('sinal');
+                const sinalTxt = e.data.sinal === 'CALL' ? '📈 COMPRAR (CALL)' : (e.data.sinal === 'PUT' ? '📉 VENDER (PUT)' : '⏳ AGUARDAR');
+                el.innerHTML = sinalTxt;
+                el.className = `sinal ${e.data.sinal.toLowerCase()}`;
+                document.getElementById('confFill').style.width = `${e.data.confianca}%`;
+                if(e.data.preco) document.getElementById('preco').innerHTML = `EUR/USD: $${e.data.preco.toFixed(5)}`;
+            }
+        };
+    }
+
+    async function carregarStats() {
+        const { data: stats } = await supabase.from('estatisticas').select('*').eq('cliente_id', cliente.id).eq('timeframe', 'm15').single();
+        if(stats) {
+            document.getElementById('acertos').innerText = stats.acertos || 0;
+            document.getElementById('erros').innerText = stats.erros || 0;
+            document.getElementById('lucro').innerHTML = `R$ ${(stats.lucro_total || 0).toFixed(2)}`;
+        }
+    }
+
+    function logout() { if(channel) channel.close(); supabase.auth.signOut(); location.reload(); }
+</script>
+</body>
+  </html>
