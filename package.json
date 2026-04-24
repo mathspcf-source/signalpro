@@ -1,0 +1,13 @@
+{
+  "name": "signalpro-bot",
+  "version": "1.0.0",
+  "description": "Bot de sinais para IQ Option",
+  "main": "bot.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node bot.mjs"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
+}
