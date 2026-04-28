@@ -1,2 +1,1 @@
-# requirements.txt
 git+https://github.com/williansandi/iqoptionapi-2025-Atualizada-.git
