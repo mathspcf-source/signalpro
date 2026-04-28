@@ -1,3 +1,4 @@
+# bot.py
 from iqoptionapi.stable_api import IQ_Option
 import time
 import os
@@ -13,31 +14,31 @@ def log(mensagem, tipo="INFO"):
 
 def conectar():
     log("Conectando na IQ Option...")
-    
+
     if not EMAIL or not SENHA:
         log("EMAIL ou SENHA não configurados no GitHub Secrets!", "ERRO")
         return None
-    
+
     api = IQ_Option(EMAIL, SENHA)
-    check, reason = api.connect()
+    # O método 'connect' em versões mais novas já retorna um booleano
+    check_conectado = api.connect()
     
-    if check:
+    if check_conectado:
         log("Conectado com sucesso!")
+        # Muda para conta DEMO (mais seguro para testes)
         api.change_balance("PRACTICE")
         saldo = api.get_balance()
         log(f"Saldo: ${saldo}")
         return api
     else:
-        log(f"Falha: {reason}", "ERRO")
+        log("Falha na conexão. Verifique suas credenciais.", "ERRO")
         return None
 
 def calcular_rsi(fechamentos, periodo=14):
     if len(fechamentos) < periodo + 1:
         return 50
     
-    ganhos = 0
-    perdas = 0
-    
+    ganhos, perdas = 0, 0
     for i in range(1, len(fechamentos)):
         diff = fechamentos[i] - fechamentos[i-1]
         if diff > 0:
@@ -47,7 +48,9 @@ def calcular_rsi(fechamentos, periodo=14):
     
     if perdas == 0:
         return 100
-    
+    if ganhos == 0:
+        return 0
+        
     return 100 - (100 / (1 + (ganhos/periodo)/(perdas/periodo)))
 
 def calcular_ma(fechamentos, periodo):
@@ -59,6 +62,7 @@ def analisar_sinal(candles):
     if not candles or len(candles) < 50:
         return "NEUTRAL", 0
     
+    # Pega apenas os fechamentos dos candles COMPLETOS
     fechamentos = [c['close'] for c in candles[:-1]]
     
     if len(fechamentos) < 50:
@@ -92,10 +96,11 @@ def executar_operacao(api, par, direcao, valor=5.00):
     log(f"Executando {direcao} em {par} com ${valor}")
     
     try:
-        resultado = api.buy(valor, par, direcao, 5)
+        # 'buy' retorna status booleano, id da ordem e tempo de expiração
+        resultado, id_ordem, expiration = api.buy(valor, par, direcao, 1)
         
         if resultado:
-            log(f"✅ Ordem executada! ID: {resultado}")
+            log(f"✅ Ordem executada! ID: {id_ordem}")
             return True
         else:
             log("❌ Falha na ordem", "ERRO")
@@ -114,12 +119,13 @@ def main():
     api = conectar()
     if not api:
         return
-    
+
     log(f"Analisando {len(PARES)} pares...")
     
     for par in PARES:
         log(f"\n📊 {par}")
         
+        # Buscando 100 candles de 5 minutos
         candles = api.get_candles(par, 5, 100)
         
         if not candles:
